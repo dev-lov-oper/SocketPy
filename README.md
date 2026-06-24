@@ -4,7 +4,7 @@ A beginner-friendly Python project demonstrating Network Programming using TCP a
 
 ## Overview
 
-SocketPy is designed as an educational project for students and developers who want to learn the fundamentals of network communication. It covers the core concepts of socket programming, including establishing connections, sending and receiving data, and implementing both TCP and UDP communication protocols.
+SocketPy is an Chat application built on the fundamentals of network communication. It covers the core concepts of socket programming, including establishing connections, sending and receiving data, and implementing both TCP and UDP communication protocols.
 
 ## Features
 
