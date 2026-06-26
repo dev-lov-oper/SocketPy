@@ -69,6 +69,9 @@ Through this project, you will understand:
 * Client-server architecture
 * Sending and receiving data over a network
 * Basic network application development in Python
+ ## 📚 Documentation
+
+- **NETWORKING_BASICS.md** — A concise guide covering networking fundamentals, sockets, IP addresses, ports, TCP vs UDP, client-server architecture, and learning resources for further study.
 
 ## Future Improvements
 
