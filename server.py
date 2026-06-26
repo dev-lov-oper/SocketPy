@@ -13,5 +13,6 @@ print(f"Server listening on {HOST}:{PORT}")
 while True:
     client,addr=s.accept()
     print("client is connected and has address: ", addr)
+    client.send(bytes("Welcome to the server!", "utf-8"))
     client.close()
 
