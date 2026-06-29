@@ -1,85 +1,52 @@
 import socket
-import threading
-import tkinter as tk
-from tkinter.scrolledtext import ScrolledText
+from tkinter import *
 
-HOST = "127.0.0.1"
-PORT = 12351
-
-# ---------------- GUI ---------------- #
-
-root = tk.Tk()
-root.title("Server")
-root.geometry("500x500")
-
-chat_box = ScrolledText(root, state="disabled", font=("Arial", 12))
-chat_box.pack(fill="both", expand=True, padx=10, pady=10)
-
-entry = tk.Entry(root, font=("Arial", 12))
-entry.pack(fill="x", padx=10, pady=5)
-
-
-def add_message(sender, msg):
-    chat_box.config(state="normal")
-    chat_box.insert(tk.END, f"{sender}: {msg}\n")
-    chat_box.config(state="disabled")
-    chat_box.see(tk.END)
-
-
-# ---------------- Socket ---------------- #
-
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((HOST, PORT))
-server.listen(1)
-
-print(f"Server listening on {HOST}:{PORT}")
-
-client, addr = server.accept()
-
-print("Connected:", addr)
-add_message("System", f"Client connected: {addr}")
-
-
-# ---------------- Receive Thread ---------------- #
-
-def receive():
-    while True:
-        try:
-            message = client.recv(1024).decode("utf-8")
-
-            if not message:
-                break
-
-            root.after(0, add_message, "Client", message)
-
-        except:
-            break
-
-
-threading.Thread(target=receive, daemon=True).start()
-
-
-# ---------------- Send ---------------- #
-
-def send(event=None):
-    message = entry.get().strip()
-
-    if message == "":
-        return
-
+# Send a message to the client
+def send(listbox, entry):
+    message = entry.get()
+    listbox.insert(END, "Server: " + message)
+    entry.delete(0, END)
     client.send(message.encode("utf-8"))
 
-    add_message("You", message)
+# Receive a message from the client
+def receive(listbox):
+    message = client.recv(1024).decode("utf-8")
+    listbox.insert(END, "Client: " + message)
 
-    entry.delete(0, tk.END)
+# Create the main window
+root = Tk()
+root.title("Server")
 
+# Text entry for typing messages
+entry = Entry(root)
+entry.pack(side=BOTTOM)
 
-send_button = tk.Button(root, text="Send", command=send)
-send_button.pack(pady=5)
+# Listbox to display chat messages
+listbox = Listbox(root)
+listbox.pack()
 
-entry.bind("<Return>", send)
+# Button to send a message
+Button(root, text="Send", command=lambda: send(listbox, entry)).pack(side=BOTTOM)
 
+# Button to receive a message
+Button(root, text="Receive", command=lambda: receive(listbox)).pack(side=BOTTOM)
+
+# Create a TCP socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+HOST_NAME = "127.0.0.1"
+PORT = 12344
+
+# Bind the socket to the address
+s.bind((HOST_NAME, PORT))
+
+# Start listening for client connections
+s.listen(1)
+
+# Accept a client connection
+print("Waiting for client...")
+client, address = s.accept()
+print("Connected:", address)
+
+# Start the GUI event loop
 root.mainloop()
-
-client.close()
-server.close()
